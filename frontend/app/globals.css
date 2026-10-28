@@ -1,0 +1,88 @@
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --text: #1c1c1a;
+  --muted: #6b6b66;
+  --border: #e4e3de;
+  --accent: #2f6f5e;
+  --accent-soft: #e6f0ec;
+  --error: #b42318;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151514;
+    --surface: #1e1e1c;
+    --text: #ecebe6;
+    --muted: #a3a29b;
+    --border: #33322e;
+    --accent: #7cc4ad;
+    --accent-soft: #23332e;
+    --error: #f97066;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "PingFang SC", "Noto Sans SC", "Noto Sans Thai", sans-serif;
+  line-height: 1.6;
+}
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
+
+h1 { margin: 0; font-size: 28px; letter-spacing: -0.01em; }
+.lede { margin: 4px 0 24px; color: var(--muted); }
+h2 { font-size: 15px; color: var(--muted); margin: 24px 0 8px; }
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  resize: vertical;
+}
+textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.row { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; margin-top: 8px; flex-wrap: wrap; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button {
+  font: inherit;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+.chip { background: transparent; color: var(--accent); border-color: var(--border); padding: 4px 12px; font-size: 14px; }
+
+.error { color: var(--error); }
+
+.result { margin-top: 32px; }
+.summary { font-size: 18px; font-weight: 600; margin: 0; }
+.explanation { white-space: pre-wrap; color: var(--text); }
+
+.examples { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.examples li {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.examples li.cited { border-color: var(--accent); background: var(--accent-soft); }
+.translation { color: var(--muted); }
+.meta { font-size: 12px; color: var(--muted); }
+
+footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+footer a { color: inherit; }

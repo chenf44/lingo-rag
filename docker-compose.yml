@@ -1,0 +1,17 @@
+# Local Postgres + pgvector, the same extension Neon provides in production.
+#   docker compose up -d
+#   then set STORE=postgres in .env and run:  make load-sample
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: lingo
+      POSTGRES_PASSWORD: lingo
+      POSTGRES_DB: lingo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
