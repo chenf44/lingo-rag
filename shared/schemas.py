@@ -31,6 +31,14 @@ class Answer(BaseModel):
         default_factory=list,
         description="sentence_ids cited; must be a subset of the retrieved ids",
     )
+    grounded: bool = Field(
+        default=False,
+        description=(
+            "True only when the answer cites at least one retrieved example. "
+            "False means no real example supported it: terminals must label it "
+            "as AI-generated without evidence."
+        ),
+    )
 
 
 class AskRequest(BaseModel):

@@ -12,6 +12,8 @@ export type Answer = {
   summary: string;
   explanation: string;
   examples: number[];
+  // false = no real example supports this answer; must be shown as AI-generated.
+  grounded: boolean;
 };
 
 export type AskResponse = {

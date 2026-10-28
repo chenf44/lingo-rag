@@ -38,7 +38,12 @@ class Retriever:
         vectors = self.embedder.embed([s.embedding_text() for s in sentences])
         self.store.add(sentences, vectors)
 
-    def search(self, query: str, k: int = 5) -> list[RetrievedItem]:
+    def search(self, query: str, k: int = 5, min_score: float = 0.0) -> list[RetrievedItem]:
+        """Return up to k examples, dropping any scoring below min_score.
+
+        An empty list means "no real evidence" and is a valid result: the
+        generation step must then say so instead of forcing an answer.
+        """
         [qvec] = self.embedder.embed([query])
         return [
             RetrievedItem(
@@ -49,6 +54,7 @@ class Retriever:
                 score=round(score, 4),
             )
             for s, score in self.store.search(qvec, k)
+            if score >= min_score
         ]
 
 
