@@ -28,16 +28,64 @@ One core API, several terminals:
 
 ## Quick start (no keys, no database)
 
-```bash
-pip install -r requirements-dev.txt
-make test                 # 8 tests, offline
-make api                  # http://localhost:8000/api/health
+### Prerequisites
 
-cd frontend && npm install && cp .env.example .env.local
-npm run dev               # http://localhost:3000
+- **Python 3.11 or newer.** macOS ships Python 3.9 as `python3`, which is too old.
+  Install a newer one from [python.org](https://www.python.org/downloads/macos/)
+  (or `brew install python@3.13`), then call it by its versioned name, e.g. `python3.14`.
+  Do **not** use the `python3.14t` ("free-threaded") build; some dependencies do not
+  install on it.
+- **Node.js 20 or newer** for the frontend.
+
+### First time
+
+```bash
+git clone https://github.com/chenf44/lingo-rag.git
+cd lingo-rag
+
+python3.14 -m venv .venv          # use the Python version you installed
+source .venv/bin/activate         # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt
+make test                         # expect: 8 passed
 ```
 
-Try: `curl -X POST localhost:8000/api/ask -H 'content-type: application/json' -d '{"query":"改天我请你吃饭"}'`
+Then run the API and the web app in **two terminal windows** (both keep running):
+
+```bash
+# Window 1 — API on http://localhost:8000
+cd lingo-rag
+source .venv/bin/activate
+make api
+
+# Window 2 — web app on http://localhost:3000
+cd lingo-rag/frontend
+npm install                       # first time only
+cp .env.example .env.local        # first time only
+npm run dev
+```
+
+Open http://localhost:3000 and click an example question. Stop either one with `Ctrl + C`.
+
+### Every time after
+
+Every new terminal needs the virtual environment activated before `make api`
+or `make test` (otherwise `uvicorn` / `pytest` are "not found"):
+
+```bash
+cd lingo-rag && source .venv/bin/activate && make api      # window 1
+cd lingo-rag/frontend && npm run dev                        # window 2
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `zsh: command not found: python` | macOS has no `python` command | Use `python3.14` (or your version) to create the venv; inside the venv, `python` works |
+| `make: pytest: No such file or directory` | venv not created or not activated | `source .venv/bin/activate` (create it first if needed) |
+| `make: No rule to make target '#'` | A pasted command included its `# comment`; zsh does not treat `#` as a comment by default | Paste only the command part |
+| Web page shows "请求失败" / "Failed to fetch" | API is not running | Start window 1 (`make api`) |
+
+Try the API directly: `curl -X POST localhost:8000/api/ask -H 'content-type: application/json' -d '{"query":"改天我请你吃饭"}'`
 
 ## Switching to real providers
 
