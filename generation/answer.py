@@ -5,7 +5,12 @@ import re
 from functools import lru_cache
 
 from generation.llm import LLM, build_llm
-from generation.prompt import SYSTEM_PROMPT, build_user_prompt
+from generation.prompt import (
+    NO_EVIDENCE_SYSTEM_PROMPT,
+    SYSTEM_PROMPT,
+    build_no_evidence_prompt,
+    build_user_prompt,
+)
 from shared.config import get_settings
 from shared.schemas import Answer, RetrievedItem
 
@@ -40,12 +45,19 @@ def parse_answer(raw: str, allowed_ids: set[int]) -> Answer:
         summary=str(data.get("summary", "")).strip(),
         explanation=str(data.get("explanation", "")).strip(),
         examples=cited,
+        grounded=bool(cited),
     )
 
 
 def generate_answer(query: str, retrieved: list[RetrievedItem], llm: LLM) -> Answer:
+    """Grounded answer when examples exist; otherwise an explicitly ungrounded one.
+
+    grounded is derived from what was actually cited, never from the model's
+    own claim, so an answer that cites nothing is always marked ungrounded.
+    """
     if not retrieved:
-        return Answer(summary="没有找到相关例句。", explanation="", examples=[])
+        raw = llm.complete(NO_EVIDENCE_SYSTEM_PROMPT, build_no_evidence_prompt(query))
+        return parse_answer(raw, allowed_ids=set())
     raw = llm.complete(SYSTEM_PROMPT, build_user_prompt(query, retrieved))
     return parse_answer(raw, {r.sentence_id for r in retrieved})
 

@@ -36,11 +36,14 @@ def health() -> dict:
         "store": settings.store,
         "embedding_provider": settings.embedding_provider,
         "llm_provider": settings.llm_provider,
+        "min_relevance_score": settings.min_relevance_score,
     }
 
 
 @app.post("/api/ask", response_model=AskResponse)
 def ask(req: AskRequest) -> AskResponse:
-    retrieved = get_retriever().search(req.query, k=req.top_k)
+    retrieved = get_retriever().search(
+        req.query, k=req.top_k, min_score=settings.min_relevance_score
+    )
     answer = generate_answer(req.query, retrieved, get_llm())
     return AskResponse(answer=answer, retrieved=retrieved)

@@ -96,6 +96,7 @@ Copy `.env.example` to `.env` and set:
 | `STORE` | `memory` (sample data in RAM) or `postgres` (`DATABASE_URL`) |
 | `EMBEDDING_PROVIDER` | `fake` or `openai_compatible` (+ base URL, key, model, `EMBEDDING_DIM`) |
 | `LLM_PROVIDER` | `fake`, `anthropic` or `openai_compatible` (+ key, model) |
+| `MIN_RELEVANCE_SCORE` | Examples below this score are dropped. If none remain, the answer has `grounded: false` and the UI labels it "AI-generated, no real evidence". Re-tune per embedding model |
 
 Load data into Postgres (local Docker or Neon):
 

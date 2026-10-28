@@ -40,6 +40,10 @@ class Settings:
     llm_api_key: str
     llm_model: str
 
+    # Retrieved examples scoring below this are dropped (0 disables the filter).
+    # Scores depend on the embedding model: re-tune after switching providers.
+    min_relevance_score: float
+
     # Comma-separated origins allowed to call the API from a browser.
     allowed_origins: list[str]
 
@@ -54,11 +58,12 @@ def get_settings() -> Settings:
         embedding_base_url=_env("EMBEDDING_BASE_URL"),
         embedding_api_key=_env("EMBEDDING_API_KEY"),
         embedding_model=_env("EMBEDDING_MODEL"),
-        embedding_dim=int(_env("EMBEDDING_DIM", "256")),
+        embedding_dim=int(_env("EMBEDDING_DIM", "1024")),
         llm_provider=_env("LLM_PROVIDER", "fake"),
         llm_base_url=_env("LLM_BASE_URL"),
         llm_api_key=_env("LLM_API_KEY"),
         llm_model=_env("LLM_MODEL"),
+        min_relevance_score=float(_env("MIN_RELEVANCE_SCORE", "0.15")),
         allowed_origins=[
             o.strip()
             for o in _env("ALLOWED_ORIGINS", "http://localhost:3000").split(",")

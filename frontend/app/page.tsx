@@ -72,11 +72,17 @@ export default function Home() {
 
       {result && (
         <section className="result">
+          {!result.answer.grounded && (
+            <p className="badge-ungrounded">AI 生成，无真实例句佐证，仅供参考</p>
+          )}
           <p className="summary">{result.answer.summary}</p>
           {result.answer.explanation && (
             <p className="explanation">{result.answer.explanation}</p>
           )}
           <h2>例句</h2>
+          {result.retrieved.length === 0 && (
+            <p className="empty">知识库里没有找到足够相关的真实例句。</p>
+          )}
           <ul className="examples">
             {result.retrieved.map((r) => (
               <li key={r.sentence_id} className={cited.has(r.sentence_id) ? "cited" : ""}>

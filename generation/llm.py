@@ -20,7 +20,17 @@ class FakeLLM:
 
     def complete(self, system: str, user: str) -> str:
         marker = "Example sentences (JSON):\n"
-        examples = json.loads(user.split(marker, 1)[1]) if marker in user else []
+        if marker not in user:
+            return json.dumps(
+                {
+                    "summary": "离线模式：没有找到相关的真实例句（未调用大模型）。",
+                    "explanation": "知识库里没有足够相关的例句。接入真实大模型后，这里会给出"
+                    "标注为「AI 生成」的建议说法。",
+                    "examples": [],
+                },
+                ensure_ascii=False,
+            )
+        examples = json.loads(user.split(marker, 1)[1])
         ids = [e["sentence_id"] for e in examples[:3]]
         lines = [f"- {e['text']}（{e.get('translation') or ''}）" for e in examples[:3]]
         return json.dumps(
